@@ -2,15 +2,6 @@ import pandas as pd
 from pypxlib import Table
 
 def update_db(df_path, ps_path, db_path, make, ps_model, ps_retail, ps_cost, wholesaleActive, ps_dealer):
-    print(df_path)
-    print(ps_path)
-    print(db_path)
-    print(make)
-    print(ps_model)
-    print(ps_retail)
-    print(ps_cost)
-    print(wholesaleActive)
-    print(ps_dealer)
     df_model ='MODEL'
     df_retail = 'RETAIL'
     df_dealer = 'DEALER'
@@ -20,8 +11,16 @@ def update_db(df_path, ps_path, db_path, make, ps_model, ps_retail, ps_cost, who
     table = Table(db_path)
     df = pd.read_csv(df_path)
     ps = pd.read_excel(ps_path, dtype=str, index_col=None)
+    ps.columns = ps.columns.str.lower()
+    print(type(ps.columns))
+    print(ps.columns)
+    print(type(df_path))
+    print(make)
+    print(ps_model)
+    print(ps_retail)
 
     maker = df.loc[df[df_make] == make] #Creating a new df of just the make
+    print(maker)
     ru = maker.loc[maker[df_model].isin(ps[ps_model])] #Created a subsequent df for models that appear in database and price sheet
 
     def replace(df_model,df_replace,ps_model,ps_replace):
@@ -50,3 +49,4 @@ def update_db(df_path, ps_path, db_path, make, ps_model, ps_retail, ps_cost, who
     finally:
         table.close()
     return len(df_list)*len(ru.index)
+
