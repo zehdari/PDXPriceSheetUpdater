@@ -50,21 +50,34 @@ def listMakes():
     dbRead = pd.read_csv(df)
     dbRead = dbRead['MAKE'].sort_values().unique()
 
+def showMake():
+    makeWindow = Toplevel(root)
+    makeWindow.title('MAKE LIST')
+    makeWindow.geometry('650x750')
+    dbReadList = list(map(str, dbRead))
+    print(type(dbReadList))
+    for i, a in enumerate(dbReadList):
+        if i % 7 == 6: 
+            dbReadList.insert(i, '\n')
+    Label(makeWindow, text='  |  '.join(dbReadList)).pack()
+
 def onClosing():
     if messagebox.askokcancel('Quit', 'Do you want to quit?'):
         root.destroy()
 
 def checkMakes(*args):
     if 'dbRead' in globals():
-        global makeCheckI
-        if psMakeV.get().upper() in dbRead:
-            makeCheck['text'] = ''
-            makeCheck['fg'] = '#000000'
-            makeCheckI = 1
-        else:
-            makeCheck['text'] = 'Enter a valid MAKE'
-            makeCheck['fg'] = '#5F0500'
-            makeCheckI = 0
+        if psMake.get():
+            global makeCheckI
+            if psMakeV.get().upper() in dbRead:
+                makeCheck['text'] = ''
+                makeCheck['fg'] = '#000000'
+                makeCheckI = 1
+            else:
+                makeCheck['text'] = 'Enter a valid MAKE'
+                makeCheck['fg'] = '#5F0500'
+                makeCheckI = 0
+        makeButton['state'] = NORMAL
     toggleState()
 
 def checkModel(*args):
@@ -174,6 +187,9 @@ psButton.grid(row=3, column=0, padx=5, pady=5)
 
 dbButton = Button(root, text=db_title, command= lambda: onClick(*db_onClick))
 dbButton.grid(row=4, column=0, padx=5, pady=5)
+
+makeButton = Button(root, text='Show MAKE list', command=showMake, state=DISABLED)
+makeButton.grid(row=5, column=2, padx=5, pady=5)
 
 columnHeader = Label (root)
 columnHeader.grid(row=6,column=2, padx=5, pady=10, sticky='ew')
